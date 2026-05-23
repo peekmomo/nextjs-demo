@@ -1,3 +1,12 @@
-export default function AbcPage() {
-  return <div>abc</div>;
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <>
+     {children}</>
+       
+  );
 }
