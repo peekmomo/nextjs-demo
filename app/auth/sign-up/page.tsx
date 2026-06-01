@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { SignUpSchema } from "../../schemas/auth";
 import { Form } from "radix-ui";
+import {z} from "zod";
 import { FieldGroup, Field ,FieldLabel,FieldError} from "@/components/ui/field";
+import { authClient } from "@/lib/auth-client";
 
 
 export default function SignUp() {
@@ -15,7 +17,16 @@ export default function SignUp() {
             password: "",
             name: ""
         }
-    })
+    });
+    
+    async function onSubmit(data: z.infer<typeof SignUpSchema>) {
+        // Handle sign up logic here, e.g., call an API endpoint to create a new user
+       await authClient.signUp.email(
+        {email: data.email,
+        password: data.password,
+        name: data.name}
+       );
+    }
     return (
 
         <Card>
@@ -27,7 +38,7 @@ export default function SignUp() {
             </CardHeader>
 
             <CardContent>
-                <form>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FieldGroup>
                         <Controller
                             name="email"
