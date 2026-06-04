@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "../../components/web/navbar";
-import { ThemeProvider } from "@/components/ui/theme-provider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,12 +24,12 @@ export default function SharedLayout({
 }>) {
   return (
    
-       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      
         <main className="max-w-7xl w-full mx-auto px-4 md:px-6 lg:px-8">
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
        </main>
-       </ThemeProvider>
+      
      
   );
 }

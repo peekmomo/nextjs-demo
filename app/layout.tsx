@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/web/navbar";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ConvexClientProvider } from "@/components/web/ConvexClientProvider";
+
+// 👇 引入你的 Convex Provider（请根据你的实际路径修改）
+import {ConvexClientProvider} from "./ConvexClientProvider"; 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,9 +34,19 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <main className="max-w-7xl w-full mx-auto px-4 md:px-6 lg:px-8">
-        <ConvexClientProvider>{children}</ConvexClientProvider>
-       </main>
+        {/* 👇 1. 用 Convex Provider 包裹最外层，提供全局身份验证状态 */}
+        <ConvexClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            
+            {/* 👇 2. 把 Navbar 放进来，通常放在 main 的上方 */}
+            <Navbar />
+
+            <main className="max-w-7xl w-full mx-auto px-4 md:px-6 lg:px-8 flex-1">
+              {children}
+            </main>
+            
+          </ThemeProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );
