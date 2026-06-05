@@ -4,6 +4,7 @@ import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./theme-provider";
 import { useConvexAuth } from "convex/react";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 export default function Navbar() {
     const { isAuthenticated, isLoading } = useConvexAuth();
     return (
@@ -20,7 +21,18 @@ export default function Navbar() {
             <div className="flex items-center gap-3 ml-auto">
                 {/* 1. 处理身份验证的逻辑块 */}
                 {isLoading ? null : isAuthenticated ? (
-                    <Button variant="outline" onClick={() => { authClient.signOut();}}>
+                    <Button variant="outline" onClick={() => { authClient.signOut({
+                        fetchOptions: {
+                            onSuccess: () => {
+                                // 退出成功后的回调，例如重定向到登录页
+                                toast.success("Logged out successfully!");
+                            },
+                            onError: (error) => {
+                                // 处理退出失败的情况，例如显示错误消息
+                                toast.error("Failed to log out: " + error.error.message);
+                            }
+                        }
+                    });}}>
                         Logout
                     </Button>
                 ) :(

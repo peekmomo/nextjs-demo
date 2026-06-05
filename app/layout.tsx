@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 
 // 👇 引入你的 Convex Provider（请根据你的实际路径修改）
 import {ConvexClientProvider} from "./ConvexClientProvider"; 
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +45,7 @@ export default function RootLayout({
             <main className="max-w-7xl w-full mx-auto px-4 md:px-6 lg:px-8 flex-1">
               {children}
             </main>
-            
+            <Toaster />
           </ThemeProvider>
         </ConvexClientProvider>
       </body>
