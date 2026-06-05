@@ -4,12 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { LoginSchema } from "../../schemas/auth";
 import { Form } from "radix-ui";
-import {z} from "zod";
-import { FieldGroup, Field ,FieldLabel,FieldError} from "@/components/ui/field";
+import { z } from "zod";
+import { FieldGroup, Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { authClient } from "@/lib/auth-client";
-
+import { toast } from "sonner";
+import { useRouter } from 'next/navigation'
+import { useTransition } from "react";
 
 export default function Login() {
+    const router = useRouter()
+    const [isPending, startTransition] = useTransition()
     const form = useForm({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -17,13 +21,25 @@ export default function Login() {
             password: "",
         }
     });
-    
+
     async function onSubmit(data: z.infer<typeof LoginSchema>) {
-        // Handle login logic here, e.g., call an API endpoint to authenticate the user
-       await authClient.signIn.email(
-        {email: data.email,
-        password: data.password}
-       );
+        startTransition(async () => {
+            await authClient.signIn.email(
+                {
+                    email: data.email,
+                    password: data.password
+                },
+                {
+                    onSuccess: () => {
+                        toast.success("Logged in successfully!");
+                        router.push("/");
+                    },
+                    onError: (error) => {
+                        toast.error("Failed to log in: " + error.error.message);
+                    }
+                }
+            )
+        });
     }
     return (
 
@@ -31,7 +47,7 @@ export default function Login() {
             <CardHeader>
                 <CardTitle>Login In</CardTitle>
                 <CardDescription>
-                   Login in to your account.
+                    Login in to your account.
                 </CardDescription>
             </CardHeader>
 
@@ -41,7 +57,7 @@ export default function Login() {
                         <Controller
                             name="email"
                             control={form.control}
-                            render={({ field ,fieldState}) => (
+                            render={({ field, fieldState }) => (
                                 <Field>
                                     <FieldLabel>Email</FieldLabel>
                                     <input type="email" {...field} />
@@ -52,7 +68,7 @@ export default function Login() {
                         <Controller
                             name="password"
                             control={form.control}
-                            render={({ field ,fieldState}) => (
+                            render={({ field, fieldState }) => (
                                 <Field>
                                     <FieldLabel>Password</FieldLabel>
                                     <input type="password" {...field} />
@@ -60,7 +76,9 @@ export default function Login() {
                                 </Field>
                             )}
                         />
-                        <button type="submit">Login</button>
+                        <button type="submit" disabled={isPending}>
+                            {isPending ? "Logging in..." : "Login"}
+                        </button>
                     </FieldGroup>
                 </form>
             </CardContent>

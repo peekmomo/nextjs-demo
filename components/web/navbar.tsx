@@ -16,7 +16,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3 ml-8">
                 <Link href="/" className="text-gray-600 hover:text-gray-800">Home</Link>
                 <Link href="/" className="text-gray-600 hover:text-gray-800">Blog</Link>
-                <Link href="/" className="text-gray-600 hover:text-gray-800">Create</Link>
+                <Link href="/create" className="text-gray-600 hover:text-gray-800">Create</Link>
             </div>
             <div className="flex items-center gap-3 ml-auto">
                 {/* 1. 处理身份验证的逻辑块 */}
