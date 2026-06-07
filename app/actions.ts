@@ -1,0 +1,24 @@
+"use server"
+import {z} from "zod";
+import { BlogSchema } from "./schemas/blog";
+import { fetchMutation } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import { redirect, RedirectType } from 'next/navigation'
+import { getToken,fetchAuthMutation } from "@/lib/auth-server";
+
+export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
+    const parsed= BlogSchema.safeParse(data);
+    if(!parsed.success) {
+        throw new Error("Invalid data: " + parsed.error.message);
+    }
+    const token=await getToken()
+    await fetchMutation(api.post.createPost, {
+      title: parsed.data.title,
+      content: parsed.data.content
+    }, { token });
+   
+   
+    return redirect("/");
+  
+    
+}
