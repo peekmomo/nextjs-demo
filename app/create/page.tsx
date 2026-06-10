@@ -25,6 +25,7 @@ export default function Create() {
             defaultValues: {
                 title: "",
                 content: "",
+                image:"",
             }
         });
         function onSubmit(data: z.infer<typeof BlogSchema>) {
