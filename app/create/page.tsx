@@ -25,7 +25,8 @@ export default function Create() {
             defaultValues: {
                 title: "",
                 content: "",
-                image:"",
+                image:undefined
+                
             }
         });
         function onSubmit(data: z.infer<typeof BlogSchema>) {
@@ -74,6 +75,21 @@ export default function Create() {
                                 <Field>
                                     <FieldLabel>Content</FieldLabel>
                                     <Textarea placeholder="Type your message here." {...field} />
+                                    {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+                                </Field>
+                            )}
+                        />
+                         <Controller
+                            name="image"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field>
+                                    <FieldLabel>Image</FieldLabel>
+                                    <Input type="file" aria-invalid={fieldState.invalid} placeholder="please update image"
+                                      accept="image/*" onChange={(event)=>{
+                                        const file=event.target.files?.[0]
+                                        field.onChange(file)
+                                      }}/>
                                     {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
                                 </Field>
                             )}

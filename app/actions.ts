@@ -5,6 +5,7 @@ import { fetchMutation } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { redirect, RedirectType } from 'next/navigation'
 import { getToken,fetchAuthMutation } from "@/lib/auth-server";
+import { error } from "console";
 
 export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
     const parsed= BlogSchema.safeParse(data);
@@ -12,9 +13,25 @@ export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
         throw new Error("Invalid data: " + parsed.error.message);
     }
     const token=await getToken()
+    const imageURL=await fetchMutation(
+        api.post.getImageURL,
+        {},
+        {token}
+    )
+    const uploadResult=await fetch(imageURL,{
+        method:'POST',
+        body:parsed.data.image
+    })
+    if(!uploadResult.ok){
+        return {
+            error:"Failed to upload Image"
+        }
+    }
+    const {storageId}=await uploadResult.json()
     await fetchMutation(api.post.createPost, {
       title: parsed.data.title,
-      content: parsed.data.content
+      content: parsed.data.content,
+      imageStorageId: storageId,
     }, { token });
    
    
