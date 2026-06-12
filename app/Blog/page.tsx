@@ -7,6 +7,7 @@ import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+export const dynamic = "force-static" // true | false
 
 export default async function Blog() {
 
