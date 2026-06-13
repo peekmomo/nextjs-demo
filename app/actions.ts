@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { redirect, RedirectType } from 'next/navigation'
 import { getToken,fetchAuthMutation } from "@/lib/auth-server";
 import { error } from "console";
+import { revalidatePath } from "next/cache";
 
 export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
     const parsed= BlogSchema.safeParse(data);
@@ -34,6 +35,7 @@ export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
       imageStorageId: storageId,
     }, { token });
    
+    revalidatePath("/blog")
    
     return redirect("/");
   
