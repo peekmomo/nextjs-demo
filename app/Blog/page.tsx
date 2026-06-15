@@ -49,12 +49,12 @@ export async function LoadingContent() {
                     </div>
                     <CardContent>
                         {/* 🟢 注意：这里有一个空的 Link，如果是误打的可以删掉 */}
-                        <Link href={`/blog/${post._id}`}></Link>
+                        <Link href={`/Blog/${post._id}`}></Link>
                         <h1 className="text-2xl font-bold mt-2">{post.title}</h1>
                         <p className="text-muted-foreground">{post.content}</p>
                     </CardContent>
                     <CardFooter>
-                        <Link href={`/blog/${post._id}`} className={buttonVariants()}>Read more</Link>
+                        <Link href={`/Blog/${post._id}`} className={buttonVariants()}>Read more</Link>
                     </CardFooter>
                 </Card>
             ))}
