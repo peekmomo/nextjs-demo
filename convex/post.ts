@@ -54,20 +54,25 @@ export const getImageURL = mutation({
 
 })
 
-export  const getPost=query({
-  args:{
-    id:v.id("posts")
+export const getPost = query({
+  args: {
+    id: v.id("posts"),
   },
-  handler:async(ctx,args)=>{
-     const post=await ctx.db.get(args.id)
-     if(!post){
-      post:null
-     }
-     const imageUrl=post.imageStorageId?await ctx.storage.getUrl(post.imageStorageId):null
-     return {
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.id);
+
+    if (!post) {
+      return null;
+    }
+
+    const imageUrl = post.imageStorageId
+      ? await ctx.storage.getUrl(post.imageStorageId)
+      : null;
+
+    return {
       ...post,
-      imageUrl
-     }
-  }
-})
+      imageUrl,
+    };
+  },
+});
 
