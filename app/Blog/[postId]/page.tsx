@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import { CommentSection } from "@/components/web/CommentSection";
+import { useQuery } from "convex/react";
 
 export default async function PostPage({
   params,
@@ -14,6 +15,7 @@ export default async function PostPage({
 }) {
   const { postId } = await params;
   const post = await fetchQuery(api.post.getPost, { id: postId as Id<"posts">, });
+
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative">
@@ -36,7 +38,7 @@ export default async function PostPage({
         Posted on: {new Date(post._creationTime).toLocaleDateString("en-US")}
       </p>
       <p>{post.content}</p>
-      <CommentSection></CommentSection>
+      <CommentSection  postId={postId as Id<"posts">} ></CommentSection>
     </div>
   );
 }

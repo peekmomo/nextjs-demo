@@ -4,6 +4,6 @@ import z from "zod";
 
 
 export const CommentSchema=z.object({
-    content:v.string(),
+    content:z.string(),
     postId:z.custom<Id<"posts">>()
 })

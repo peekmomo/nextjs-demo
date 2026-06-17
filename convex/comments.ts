@@ -18,7 +18,7 @@ export const getComments=query({
 export const createComment=mutation({
     args:{
         postId:v.id("posts"),
-        comment:v.string(),
+        content:v.string(),
     },
     handler:async(ctx,args)=>{
         const user = await authComponent.safeGetAuthUser(ctx);
@@ -27,7 +27,7 @@ export const createComment=mutation({
             }
         return await ctx.db.insert('comments',{
             postId:args.postId,
-            content:args.comment,
+            content:args.content,
             authName:user.name,
             authorId:user._id
         })

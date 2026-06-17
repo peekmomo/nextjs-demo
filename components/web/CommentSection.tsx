@@ -11,18 +11,43 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
+import z from "zod";
+import { useTransition } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { da } from "zod/locales";
 
+interface CommentSectionProps {
+  postId: Id<"posts">;
+}
 
-export function CommentSection(){
+export function CommentSection({ postId }: CommentSectionProps){
     const params=useParams<{postId:Id<"posts">}>()
+     const [isPending, startTransition] = useTransition();
     const form = useForm({
                 resolver: zodResolver(CommentSchema),
                 defaultValues: {
                    content:'',
                    postId:params.postId,
-                    
                 }
             });
+    const createComments=useMutation(api.comments.createComment)
+    const comments = useQuery(api.comments.getComments, { postId });
+    function onSubmit(data:z.infer<typeof CommentSchema>){
+      startTransition(async ()=>{
+        try{
+           await createComments({
+            postId:params.postId,
+            content:data.content
+           })
+           form.reset()
+           toast.success('success')
+        }catch(error){
+           toast.error('error')
+        }
+      })
+    }
     return (
       <Card>
          <CardHeader className="flex flex-row items-center gap-2">
@@ -31,7 +56,7 @@ export function CommentSection(){
             </MessageSquare>
          </CardHeader>
          <CardContent>
-                <form >
+                <form onSubmit={form.handleSubmit(onSubmit)} >
                     <FieldGroup>
                         <Controller
                             name="content"
@@ -47,6 +72,18 @@ export function CommentSection(){
                         <Button>Submit</Button>
                     </FieldGroup>
                 </form>
+                {comments === undefined ? (
+  <p>Loading...</p>
+) : comments.length === 0 ? (
+  <p>No comments yet</p>
+) : (
+  comments.map((comment) => (
+    <div key={comment._id}>
+      <p>{comment.authName}</p>
+      <p>{comment.content}</p>
+    </div>
+  ))
+)}
             </CardContent>
       </Card>
     )
