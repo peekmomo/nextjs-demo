@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import { CommentSection } from "@/components/web/CommentSection";
-import { useQuery } from "convex/react";
+import { useQuery,useMutation } from "convex/react";
 
 export default async function PostPage({
   params,
@@ -14,9 +14,7 @@ export default async function PostPage({
   params: Promise<{ postId: string }>
 }) {
   const { postId } = await params;
-  const post = await fetchQuery(api.post.getPost, { id: postId as Id<"posts">, });
-
-
+  const post = await fetchQuery(api.post.getPost, { id: postId as Id<"posts">, })
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative">
       <Link href="/Blog" className={buttonVariants({ variant: "ghost" })}>
