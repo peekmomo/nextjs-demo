@@ -5,9 +5,32 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
+import type { Metadata } from 'next'
 import { CommentSection } from "@/components/web/CommentSection";
-import { useQuery,useMutation } from "convex/react";
 
+
+interface PostIdRouteProps{
+  params:Promise<{
+    postId:Id<"posts">
+  }>
+}
+
+export async function generateMetadata(
+  { params}: PostIdRouteProps
+): Promise<Metadata> {
+ const {postId} =await params
+  const post=await fetchQuery(api.post.getPost,{id:postId})
+  const userId=await fetchQuery(api.auth.getCurrentUser)
+  if(!post){
+    return {
+      title:"Post not found"
+    }
+  }
+ 
+  return {
+    title: post.title,
+  }
+}
 export default async function PostPage({
   params,
 }: {

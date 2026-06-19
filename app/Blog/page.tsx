@@ -7,8 +7,17 @@ import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import type { Metadata } from 'next'
 export const dynamic = "force-static" // true | false
 
+
+export const metadata: Metadata = {
+  title: 'Blog | Next.js 16 Tutorial',
+  description: 'Read our latest articles and insights',
+  category:'Web development',
+  authors:[{name:'Jan'}]
+}
+ 
 export default async function Blog() {
 
     return (
