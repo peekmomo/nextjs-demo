@@ -1,6 +1,8 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+import { Doc } from "./_generated/dataModel";
+import { id } from "zod/v4/locales";
 
 // Create a new post with the given title and content
 export const createPost = mutation({
@@ -35,9 +37,7 @@ export const getPosts = query({
         imageUrl:resolvedId
       }
     })
-   
     )
-     console.log(posts)
   },
 })
 
@@ -76,3 +76,46 @@ export const getPost = query({
   },
 });
 
+export const searchPosts=query({
+  args:{
+    term:v.string(),
+    limit:v.number()
+  },
+  handler:async(ctx,args)=>{
+     const limit=args.limit
+     const results:Array<searchResultType>=[]
+     const seen=new Set()
+
+     const pushDocs=async(docs:Array<Doc<"posts">>)=>{
+      for(const doc of docs){
+        if(seen.has(doc._id))continue
+        seen.add(doc._id)
+        results.push({
+          _id:doc._id,
+          title:doc.title,
+          content:doc.content
+        });
+        if(results.length>=limit) break
+      }
+     };
+     const messages = await ctx.db
+  .query("posts")
+  .withSearchIndex("search_title", (q) =>
+    q.search("title", "hello hi").eq("title", args.term),
+  )
+  .take(limit);
+
+  await pushDocs(messages)
+  if(results.length<limit){
+    const bodyMatches= await ctx.db
+  .query("posts")
+  .withSearchIndex("search_content", (q) =>
+    q.search("content", "hello hi").eq("content", args.term),
+  )
+  .take(limit);
+   await pushDocs(bodyMatches)
+  }
+  return results
+ 
+}
+})

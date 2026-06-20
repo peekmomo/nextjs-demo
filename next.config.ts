@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
         pathname: '/**'
       }
     ]
-  }
+  },
+  cacheComponents:true
 };
 
 export default nextConfig;
