@@ -7,6 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import type { Metadata } from 'next'
 import { CommentSection } from "@/components/web/CommentSection";
+import { PostPresence } from "@/components/web/PostPresence";
 
 
 interface PostIdRouteProps{
@@ -20,7 +21,6 @@ export async function generateMetadata(
 ): Promise<Metadata> {
  const {postId} =await params
   const post=await fetchQuery(api.post.getPost,{id:postId})
-  const userId=await fetchQuery(api.auth.getCurrentUser)
   if(!post){
     return {
       title:"Post not found"
@@ -55,6 +55,7 @@ export default async function PostPage({
         />
       </div>
       <h1>{post.title}</h1>
+       <PostPresence roomId={postId as Id<"posts">} />
       <p className="text-sm text-muted-foreground">
         Posted on: {new Date(post._creationTime).toLocaleDateString("en-US")}
       </p>
