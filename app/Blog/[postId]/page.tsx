@@ -38,6 +38,9 @@ export default async function PostPage({
 }) {
   const { postId } = await params;
   const post = await fetchQuery(api.post.getPost, { id: postId as Id<"posts">, })
+  if (!post) {
+  return <div>加载中...</div>; // 或者返回一个 404 页面结构
+}
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative">
       <Link href="/Blog" className={buttonVariants({ variant: "ghost" })}>
