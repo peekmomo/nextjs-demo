@@ -2,9 +2,11 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 import { Doc } from "./_generated/dataModel";
-import { id } from "zod/v4/locales";
+
+type SearchResultType = Pick<Doc<"posts">, "_id" | "title" | "content">;
 
 // Create a new post with the given title and content
+
 export const createPost = mutation({
   args: {
   title: v.string(),
@@ -25,7 +27,6 @@ export const createPost = mutation({
     return newPostId;
   },
 });
-
 export const getPosts = query({
   handler: async (ctx) => {
     const posts = await ctx.db.query("posts").collect();
@@ -83,8 +84,8 @@ export const searchPosts=query({
   },
   handler:async(ctx,args)=>{
      const limit=args.limit
-     const results:Array<searchResultType>=[]
-     const seen=new Set()
+     const results:Array<SearchResultType>=[]
+     const seen=new Set<Doc<"posts">["_id"]>()
 
      const pushDocs=async(docs:Array<Doc<"posts">>)=>{
       for(const doc of docs){
@@ -101,16 +102,16 @@ export const searchPosts=query({
      const messages = await ctx.db
   .query("posts")
   .withSearchIndex("search_title", (q) =>
-    q.search("title", "hello hi").eq("title", args.term),
+    q.search("title", args.term),
   )
   .take(limit);
 
   await pushDocs(messages)
   if(results.length<limit){
-    const bodyMatches= await ctx.db
+  const bodyMatches= await ctx.db
   .query("posts")
   .withSearchIndex("search_content", (q) =>
-    q.search("content", "hello hi").eq("content", args.term),
+    q.search("content", args.term),
   )
   .take(limit);
    await pushDocs(bodyMatches)

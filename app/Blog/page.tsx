@@ -37,7 +37,7 @@ export default async function Blog() {
     )
 }
 
-export async function LoadingContent() {
+ async function LoadingContent() {
     'use cache'
   cacheLife('hours')
   cacheTag("blog")
