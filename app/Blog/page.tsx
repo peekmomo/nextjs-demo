@@ -38,9 +38,7 @@ export default async function Blog() {
 }
 
  async function LoadingContent() {
-    'use cache'
-  cacheLife('hours')
-  cacheTag("blog")
+    
     const data = await fetchQuery(api.post.getPosts);
 
     // 🟢 3. 修复：必须加上 return 关键字
