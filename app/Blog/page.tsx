@@ -7,7 +7,7 @@ import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { cacheLife, cacheTag } from 'next/cache'
+import { connection } from "next/server";
 import type { Metadata } from 'next'
 // export const dynamic = "force-static" // true | false
 
@@ -37,8 +37,8 @@ export default async function Blog() {
     )
 }
 
- async function LoadingContent() {
-    
+async function LoadingContent() {
+    await connection();
     const data = await fetchQuery(api.post.getPosts);
 
     // 🟢 3. 修复：必须加上 return 关键字
