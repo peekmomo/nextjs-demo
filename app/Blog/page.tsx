@@ -75,7 +75,7 @@ export default async function Blog() {
     );
 }
 
-export function skeletonUI(){
+function skeletonUI(){
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
            {[...Array(3)].map((_, i) => (

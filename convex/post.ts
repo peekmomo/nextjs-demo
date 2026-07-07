@@ -99,9 +99,9 @@ export const searchPosts=query({
         if(results.length>=limit) break
       }
      };
-     const messages = await ctx.db
+  const messages = await ctx.db
   .query("posts")
-  .withSearchIndex("search_title", (q) =>
+  .withSearchIndex("search_body", (q) =>
     q.search("title", args.term),
   )
   .take(limit);
