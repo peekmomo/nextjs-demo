@@ -1,20 +1,24 @@
 "use client";
-import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { LoginSchema } from "../../schemas/auth";
-import { Form } from "radix-ui";
 import { z } from "zod";
 import { FieldGroup, Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { LogIn, Loader2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function Login() {
-    const router = useRouter()
-    const [isPending, startTransition] = useTransition()
-    const form = useForm({
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+    const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
@@ -41,48 +45,85 @@ export default function Login() {
             )
         });
     }
+
     return (
+        <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center py-10">
+            <div className="w-full max-w-md">
+                <Card className="border-border/80 shadow-sm">
+                    <CardHeader className="space-y-2 px-6 pt-6 text-center">
+                        <div className="mx-auto flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <LogIn className="size-5" aria-hidden="true" />
+                        </div>
+                        <CardTitle className="text-2xl">Welcome back</CardTitle>
+                        <CardDescription>
+                            Log in to continue creating and managing your posts.
+                        </CardDescription>
+                    </CardHeader>
 
-        <Card>
-            <CardHeader>
-                <CardTitle>Login In</CardTitle>
-                <CardDescription>
-                    Login in to your account.
-                </CardDescription>
-            </CardHeader>
+                    <CardContent className="px-6 pb-6">
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <FieldGroup className="gap-4">
+                                <Controller
+                                    name="email"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field>
+                                            <FieldLabel>Email</FieldLabel>
+                                            <Input
+                                                type="email"
+                                                autoComplete="email"
+                                                placeholder="you@example.com"
+                                                aria-invalid={fieldState.invalid}
+                                                disabled={isPending}
+                                                {...field}
+                                            />
+                                            {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+                                        </Field>
+                                    )}
+                                />
+                                <Controller
+                                    name="password"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field>
+                                            <FieldLabel>Password</FieldLabel>
+                                            <Input
+                                                type="password"
+                                                autoComplete="current-password"
+                                                placeholder="Enter your password"
+                                                aria-invalid={fieldState.invalid}
+                                                disabled={isPending}
+                                                {...field}
+                                            />
+                                            {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+                                        </Field>
+                                    )}
+                                />
+                                <Button type="submit" className="mt-1 w-full" disabled={isPending}>
+                                    {isPending ? (
+                                        <>
+                                            <Loader2 className="animate-spin" aria-hidden="true" />
+                                            Logging in...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <LogIn aria-hidden="true" />
+                                            Login
+                                        </>
+                                    )}
+                                </Button>
+                            </FieldGroup>
+                        </form>
 
-            <CardContent>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <FieldGroup>
-                        <Controller
-                            name="email"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <FieldLabel>Email</FieldLabel>
-                                    <input type="email" {...field} />
-                                    {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="password"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <FieldLabel>Password</FieldLabel>
-                                    <input type="password" {...field} />
-                                    {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
-                                </Field>
-                            )}
-                        />
-                        <button type="submit" disabled={isPending}>
-                            {isPending ? "Logging in..." : "Login"}
-                        </button>
-                    </FieldGroup>
-                </form>
-            </CardContent>
-        </Card>
-
-    )
+                        <p className="mt-5 text-center text-sm text-muted-foreground">
+                            Do not have an account?{" "}
+                            <Link className="font-medium text-primary underline-offset-4 hover:underline" href="/auth/sign-up">
+                                Sign up
+                            </Link>
+                        </p>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
 }
