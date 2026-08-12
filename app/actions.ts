@@ -34,11 +34,7 @@ export async function CreateBlogAction(data: z.infer<typeof BlogSchema>) {
       content: parsed.data.content,
       imageStorageId: storageId,
     }, { token });
-   
     // revalidatePath("/blog")
     updateTag("blog")
-   
     return redirect("/");
-  
-    
 }
