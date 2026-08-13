@@ -1,5 +1,6 @@
 "use client"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./theme-provider";
 import { useConvexAuth } from "convex/react";
@@ -7,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 export default function Navbar() {
     const { isAuthenticated, isLoading } = useConvexAuth();
+    const router = useRouter();
     return (
         <nav className="h-16 w-full  border-b border-gray-200 flex items-center mb-4 px-4">
             <Link href="/">
@@ -26,6 +28,7 @@ export default function Navbar() {
                             onSuccess: () => {
                                 // 退出成功后的回调，例如重定向到登录页
                                 toast.success("Logged out successfully!");
+                                router.push("/auth/login-in");
                             },
                             onError: (error) => {
                                 // 处理退出失败的情况，例如显示错误消息
