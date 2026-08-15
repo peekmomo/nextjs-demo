@@ -8,8 +8,8 @@ import { FieldGroup, Field, FieldLabel, FieldError } from "@/components/ui/field
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { LogIn, Loader2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Eye, EyeOff, LogIn, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 export default function Login() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const [showPassword, setShowPassword] = useState(false);
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -87,14 +88,32 @@ export default function Login() {
                                     render={({ field, fieldState }) => (
                                         <Field>
                                             <FieldLabel>Password</FieldLabel>
-                                            <Input
-                                                type="password"
-                                                autoComplete="current-password"
-                                                placeholder="Enter your password"
-                                                aria-invalid={fieldState.invalid}
-                                                disabled={isPending}
-                                                {...field}
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    type={showPassword ? "text" : "password"}
+                                                    autoComplete="current-password"
+                                                    placeholder="Enter your password"
+                                                    aria-invalid={fieldState.invalid}
+                                                    disabled={isPending}
+                                                    className="pr-10"
+                                                    {...field}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute right-0 top-0 text-muted-foreground hover:text-foreground"
+                                                    onClick={() => setShowPassword((value) => !value)}
+                                                    disabled={isPending}
+                                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                                >
+                                                    {showPassword ? (
+                                                        <EyeOff aria-hidden="true" />
+                                                    ) : (
+                                                        <Eye aria-hidden="true" />
+                                                    )}
+                                                </Button>
+                                            </div>
                                             {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
                                         </Field>
                                     )}

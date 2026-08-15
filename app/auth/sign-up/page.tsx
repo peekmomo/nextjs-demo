@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { SignUpSchema } from "../../schemas/auth";
 import { z } from "zod";
-import { Loader2, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { Eye, EyeOff, Loader2, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
@@ -14,6 +15,7 @@ import { authClient } from "@/lib/auth-client";
 
 
 export default function SignUp() {
+    const [showPassword, setShowPassword] = useState(false);
     const form = useForm<z.infer<typeof SignUpSchema>>({
         resolver: zodResolver(SignUpSchema),
         defaultValues: {
@@ -93,14 +95,32 @@ export default function SignUp() {
                                     render={({ field, fieldState }) => (
                                         <Field>
                                             <FieldLabel>Password</FieldLabel>
-                                            <Input
-                                                type="password"
-                                                autoComplete="new-password"
-                                                placeholder="At least 6 characters"
-                                                aria-invalid={fieldState.invalid}
-                                                disabled={isSubmitting}
-                                                {...field}
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    type={showPassword ? "text" : "password"}
+                                                    autoComplete="new-password"
+                                                    placeholder="At least 6 characters"
+                                                    aria-invalid={fieldState.invalid}
+                                                    disabled={isSubmitting}
+                                                    className="pr-10"
+                                                    {...field}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute right-0 top-0 text-muted-foreground hover:text-foreground"
+                                                    onClick={() => setShowPassword((value) => !value)}
+                                                    disabled={isSubmitting}
+                                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                                >
+                                                    {showPassword ? (
+                                                        <EyeOff aria-hidden="true" />
+                                                    ) : (
+                                                        <Eye aria-hidden="true" />
+                                                    )}
+                                                </Button>
+                                            </div>
                                             {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
                                         </Field>
                                     )}
