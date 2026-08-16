@@ -47,7 +47,7 @@ async function LoadingContent() {
             {data?.map((post) => (
                 <Card key={post._id.toString()} className="border overflow-hidden">
                     {/* 卡片图片容器 */}
-                    <div className="relative h-48 w-full overflow-hidden">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/50">
                         <Image
                           src={
                             post?.imageUrl??"https://media.istockphoto.com/id/855022728/ja/%E3%82%B9%E3%83%88%E3%83%83%E3%82%AF%E3%83%95%E3%82%A9%E3%83%88/%E6%97%A5%E6%9C%AC%E3%81%A7%E6%9B%BD%E7%88%BE%E9%AB%98%E5%8E%9F%E9%AB%98%E5%8E%9F%E3%81%AE%E3%83%93%E3%83%A5%E3%83%BC.jpg?s=2048x2048&w=is&k=20&c=CI-ZXKV0saalVm1cgxXyUvDfr1vHYXP0jl2fEVd8nuI=" 
@@ -55,7 +55,8 @@ async function LoadingContent() {
                           fill 
                           alt="image"
                           unoptimized 
-                          className="object-cover"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                          className="object-contain"
                         />
                     </div>
                     <CardContent>
@@ -78,7 +79,7 @@ function skeletonUI(){
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
            {[...Array(3)].map((_, i) => (
                 <div className="flex flex-col space-y-3" key={i}>
-                    <Skeleton className="h-48 w-full rounded-xl"/>
+                    <Skeleton className="aspect-[4/3] w-full rounded-xl"/>
                     <div className="space-y-2 flex flex-col">
                         <Skeleton className="h-6 w-3/4"/>
                         <Skeleton className="h-4 w-full"/>
