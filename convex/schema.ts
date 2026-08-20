@@ -18,5 +18,18 @@ export default defineSchema({
      authorId: v.string(),
      authName:v.string(),
      
-  })
+  }),
+  customUsers: defineTable({
+  email: v.string(),
+  name: v.string(),
+  passwordHash: v.string(),
+  createdAt: v.number(),
+}),
+customSessions: defineTable({
+  userId: v.id("customUsers"),
+  tokenHash: v.string(),
+  expiresAt: v.number(),
+  createdAt: v.number(),
+}).index("by_tokenHash", ["tokenHash"]),
 });
+

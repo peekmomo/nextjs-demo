@@ -10,6 +10,7 @@
 
 import type * as auth from "../auth.js";
 import type * as comments from "../comments.js";
+import type * as customAuth from "../customAuth.js";
 import type * as http from "../http.js";
 import type * as post from "../post.js";
 import type * as presence from "../presence.js";
@@ -23,6 +24,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   comments: typeof comments;
+  customAuth: typeof customAuth;
   http: typeof http;
   post: typeof post;
   presence: typeof presence;
